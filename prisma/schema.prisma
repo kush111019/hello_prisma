@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model employee {
+  employeeId Int        @id @default(0)
+  name       String?    @db.VarChar(30)
+  city       String?    @db.VarChar(30)
+  salary     Int?
+  employer   employer[]
+}
+
+model employer {
+  employerId Int       @id @unique(map: "employerId") @default(autoincrement())
+  name       String?   @db.VarChar(30)
+  city       String?   @db.VarChar(30)
+  isExists   Boolean
+  eid        Int?
+  employee   employee? @relation(fields: [eid], references: [employeeId], onDelete: Restrict, onUpdate: Restrict, map: "employer_ibfk_1")
+
+  @@index([eid], map: "eid")
+}
